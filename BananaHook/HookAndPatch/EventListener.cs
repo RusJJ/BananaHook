@@ -5,6 +5,11 @@ namespace BananaHook.HookAndPatch
 {
     class EventListener
     {
+        public const byte OnGorillaHandStepEvent = 226;
+        public const byte UnknownEvent1 = 200;
+        public const byte UnknownEvent2 = 201;
+        public const byte UnknownEvent3 = 202; // Room players update?
+        public const byte UnknownEvent4 = 206;
         public EventListener()
         {
             PhotonNetwork.NetworkingClient.EventReceived += OnEvent;

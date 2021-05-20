@@ -4,7 +4,7 @@ using BananaHook.HookAndPatch;
 namespace BananaHook
 {
     /* That's me! */
-    [BepInPlugin("net.rusjj.gtlib.bananahook", "BananaHook Lib", "1.0.0")]
+    [BepInPlugin("net.rusjj.gtlib.bananahook", "BananaHook Lib", "1.0.1")]
 
     public class BananaHook : BaseUnityPlugin
     {
@@ -14,7 +14,6 @@ namespace BananaHook
         void Awake()
         {
             m_hInstance = this;
-
             BananaPatch.Apply();
         }
     }

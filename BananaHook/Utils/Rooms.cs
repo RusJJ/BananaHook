@@ -19,6 +19,11 @@ namespace BananaHook.Utils
         public static eRoomQueue m_eCurrentLobbyMode { get; internal set; } = 0;
         public static eJoinedMap m_eTriggeredMap { get; internal set; } = eJoinedMap.Forest;
         public static string m_szRoomCode { get; internal set; } = null;
+        public static bool m_bIsGameEnded { get; internal set; } = false;
+        public static bool IsInRoom()
+        {
+            return PhotonNetwork.InRoom;
+        }
         public static string GetRoomCode()
         {
             return PhotonNetwork.InRoom ? PhotonNetwork.CurrentRoom.Name : null;

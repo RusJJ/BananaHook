@@ -13,6 +13,9 @@ namespace BananaHook.Patches
         private static void Postfix()
         {
             bool isPrivate = false;
+            Room.m_eCurrentLobbyMode = (eRoomQueue)Enum.Parse(typeof(eRoomQueue), UnityEngine.PlayerPrefs.GetString("currentQueue", "DEFAULT"), true);
+            Room.m_szRoomCode = PhotonNetwork.InRoom ? PhotonNetwork.CurrentRoom.Name : null;
+            Players.CheckForTheGameEndPre();
             if (PhotonNetwork.CurrentRoom != null)
             {
                 var currentRoom = PhotonNetwork.NetworkingClient.CurrentRoom;
@@ -25,8 +28,7 @@ namespace BananaHook.Patches
                 args.roomCode = PhotonNetwork.CurrentRoom.Name;
                 Events.OnRoomJoined(null, args);
             }
-            Room.m_eCurrentLobbyMode = (eRoomQueue)Enum.Parse(typeof(eRoomQueue), UnityEngine.PlayerPrefs.GetString("currentQueue", "DEFAULT"), true);
-            Room.m_szRoomCode = PhotonNetwork.InRoom ? PhotonNetwork.CurrentRoom.Name : null;
+            Players.CheckForTheGameEndPost();
         }
     }
 
@@ -75,12 +77,14 @@ namespace BananaHook.Patches
         }
         private static void Postfix(Photon.Realtime.Player otherPlayer)
         {
+            Players.CheckForTheGameEndPre();
             if (Events.OnPlayerDisconnectedPost != null)
             {
                 PlayerDisConnectedArgs args = new PlayerDisConnectedArgs();
                 args.player = otherPlayer;
                 Events.OnPlayerDisconnectedPost(null, args);
             }
+            Players.CheckForTheGameEndPost();
         }
     }
 

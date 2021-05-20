@@ -1,4 +1,5 @@
-﻿using ExitGames.Client.Photon;
+﻿using BananaHook.Utils;
+using ExitGames.Client.Photon;
 using HarmonyLib;
 using Photon.Pun;
 using Photon.Realtime;
@@ -13,6 +14,7 @@ namespace BananaHook.HookAndPatch
             object[] tagObj = (object[])photonEvent.Parameters.TryGetObject(245);
             string taggerUserId = (string)tagObj[0], victimUserId = (string)tagObj[1];
             Player tagger = null, victim = null;
+            Players.CheckForTheGameEndPre();
             foreach (var p in PhotonNetwork.PlayerList)
             {
                 if (p.UserId == taggerUserId) tagger = p;
@@ -25,6 +27,14 @@ namespace BananaHook.HookAndPatch
                 args.victim = victim;
                 Events.OnPlayerTagPlayer(null, args);
             }
+            if(victim == PhotonNetwork.LocalPlayer && Events.OnLocalPlayerTag != null)
+            {
+                PlayerTaggedPlayerArgs args = new PlayerTaggedPlayerArgs();
+                args.tagger = tagger;
+                args.victim = victim;
+                Events.OnLocalPlayerTag(null, args);
+            }
+            Players.CheckForTheGameEndPost();
         }
     }
 
