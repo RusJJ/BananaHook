@@ -1,4 +1,5 @@
-﻿using ExitGames.Client.Photon;
+﻿using BananaHook.Utils;
+using ExitGames.Client.Photon;
 using Photon.Pun;
 
 namespace BananaHook.HookAndPatch
@@ -18,6 +19,7 @@ namespace BananaHook.HookAndPatch
         {
             switch(photonEvent.Code)
             {
+                case GorillaTagManager.ReportTagEvent:
                 case GorillaTagManager.ReportInfectionTagEvent:
                     OnPlayerTaggedByPlayerHook.OnEvent(photonEvent);
                     break;

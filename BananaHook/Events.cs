@@ -15,6 +15,7 @@ namespace BananaHook
     {
         public Photon.Realtime.Player tagger { get; internal set; }
         public Photon.Realtime.Player victim { get; internal set; }
+        public bool                   isTagging { get; internal set; }
     }
     public class PlayerNicknameArgs : EventArgs
     {
@@ -25,9 +26,14 @@ namespace BananaHook
     {
         public Photon.Realtime.Player player { get; internal set; }
     }
+    public class IsTagOrInfectArgs : EventArgs
+    {
+        public bool isTagging { get; internal set; }
+    }
     public class Events
     {
         public static EventHandler<RoomJoinedArgs>          OnRoomJoined;
+        //public static EventHandler<RoomJoinedArgs>          OnRoomJoinedPost;
         public static EventHandler                          OnRoomDisconnected;
         public static EventHandler<PlayerDisConnectedArgs>  OnPlayerConnected;
         public static EventHandler<PlayerDisConnectedArgs>  OnPlayerDisconnectedPre;
@@ -38,5 +44,6 @@ namespace BananaHook
         public static EventHandler                          OnRoundEndPre;
         public static EventHandler                          OnRoundEndPost;
         public static EventHandler<OnRoundStartArgs>        OnRoundStart;
+        public static EventHandler<IsTagOrInfectArgs>       OnTagOrInfectChange;
     }
 }

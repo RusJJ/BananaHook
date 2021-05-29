@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Photon.Realtime;
 using Photon.Pun;
-using System.Threading;
 
 namespace BananaHook.Utils
 {
@@ -65,48 +64,15 @@ namespace BananaHook.Utils
             object bInfected;
             return (playerToCheck.CustomProperties.TryGetValue("isInfected", out bInfected) && (bool)bInfected);
         }
-
-        /* It checks for infected players, so it's located in Players... */
-
-        private static Thread m_hCheckerThread = null;
-        private static bool m_bThreadStarted = false;
-        internal static int m_nTagged = 0, m_nTotal = 0;
-        internal static void CheckForTheGameEndPre()
+        public static bool IsTagger(Player playerToCheck)
         {
-            if (Room.m_bIsGameEnded) return;
-            m_nTagged = CountInfectedPlayers();
-            m_nTotal = CountValidPlayers();
-            if (m_nTotal > 0 && m_nTagged == m_nTotal)
-            {
-                Room.m_bIsGameEnded = true;
-                Events.OnRoundEndPost?.Invoke(null, null);
-            }
+            object nMatIndex;
+            return (playerToCheck.CustomProperties.TryGetValue("matIndex", out nMatIndex) && (int)nMatIndex == 1);
         }
-        internal static void CheckForTheGameEndPost()
+        public static Player GetCurrentTagger()
         {
-            if (!m_bThreadStarted && Room.m_bIsGameEnded && m_nTotal > 0 && m_nTagged == m_nTotal)
-            {
-                m_bThreadStarted = true;
-                Events.OnRoundEndPost?.Invoke(null, null);
-                if (Events.OnRoundStart != null)
-                {
-                    // Sadly i need it currently.
-                    // Because the MasterClient is not sending any RPC for this.
-                    m_hCheckerThread = new Thread(Thread_CheckForGameToStart);
-                    m_hCheckerThread.Start();
-                }
-            }
-        }
-        internal static void Thread_CheckForGameToStart()
-        {
-            // Enough for 1200 * 100 = 2 min (i hope its enough because i know about the rare bug)
-            int nAntiInfinity = 1200;
-            while (--nAntiInfinity > 0 && CountInfectedPlayers() != 1) Thread.Sleep(100);
-            m_bThreadStarted = false;
-            Room.m_bIsGameEnded = false;
-            OnRoundStartArgs args = new OnRoundStartArgs();
-            args.player = GetFirstGuyInfected();
-            Events.OnRoundStart(null, args);
+            object obj;
+            return PhotonNetwork.NetworkingClient.CurrentRoom.CustomProperties.TryGetValue("currentIt", out obj) ? (Player)obj : null;
         }
     }
 }

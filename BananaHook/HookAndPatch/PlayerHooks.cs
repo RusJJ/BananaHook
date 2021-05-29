@@ -14,7 +14,8 @@ namespace BananaHook.HookAndPatch
             object[] tagObj = (object[])photonEvent.Parameters.TryGetObject(245);
             string taggerUserId = (string)tagObj[0], victimUserId = (string)tagObj[1];
             Player tagger = null, victim = null;
-            Players.CheckForTheGameEndPre();
+            bool isTag = Utils.Room.IsTagging();
+            if(!BananaHook.m_bUseSoundAsRoundEnd) Utils.Room.CheckForTheGameEndPre();
             foreach (var p in PhotonNetwork.PlayerList)
             {
                 if (p.UserId == taggerUserId) tagger = p;
@@ -25,6 +26,7 @@ namespace BananaHook.HookAndPatch
                 PlayerTaggedPlayerArgs args = new PlayerTaggedPlayerArgs();
                 args.tagger = tagger;
                 args.victim = victim;
+                args.isTagging = isTag;
                 Events.OnPlayerTagPlayer(null, args);
             }
             if(victim == PhotonNetwork.LocalPlayer && Events.OnLocalPlayerTag != null)
@@ -32,9 +34,10 @@ namespace BananaHook.HookAndPatch
                 PlayerTaggedPlayerArgs args = new PlayerTaggedPlayerArgs();
                 args.tagger = tagger;
                 args.victim = victim;
+                args.isTagging = isTag;
                 Events.OnLocalPlayerTag(null, args);
             }
-            Players.CheckForTheGameEndPost();
+            if (!BananaHook.m_bUseSoundAsRoundEnd) Utils.Room.CheckForTheGameEndPost();
         }
     }
 
