@@ -45,7 +45,7 @@ namespace BananaHook.HookAndPatch
     [HarmonyPatch("ReportTag", MethodType.Normal)]
     internal class OnPlayerTagged_MasterClient
     {
-        internal static void Postfix(GorillaTagManager __instance, Player taggedPlayer, Player taggingPlayer)
+        internal static void Prefix(GorillaTagManager __instance, Player taggedPlayer, Player taggingPlayer)
         {
             if (__instance.isCurrentlyTag)
             {
