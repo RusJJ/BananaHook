@@ -1,24 +1,28 @@
 ﻿using HarmonyLib;
 using System.Reflection;
 
-namespace BananaHook.HookAndPatch
+namespace BananaHook
 {
-    public class BananaPatch
+    public class Patch
     {
+        private static bool m_bIsPatched = false;
         private static Harmony m_hMyInstance = null;
-        private static string m_szInstanceId = "net.rusjj.gtlib.bananahook";
+        private static string m_szInstanceId = "net.rusjj.bananahook";
         public static bool IsPatched()
         {
-            return m_hMyInstance != null;
+            return m_bIsPatched;
         }
 
         internal static void Apply()
         {
-            new EventListener();
             if (m_hMyInstance == null)
             {
                 m_hMyInstance = new Harmony(m_szInstanceId);
-                m_hMyInstance.PatchAll(Assembly.GetExecutingAssembly());
+                if (!m_bIsPatched)
+                {
+                    m_hMyInstance.PatchAll(Assembly.GetExecutingAssembly());
+                    m_bIsPatched = true;
+                }
             }
         }
 
@@ -28,6 +32,7 @@ namespace BananaHook.HookAndPatch
             {
                 m_hMyInstance.UnpatchAll(m_szInstanceId);
             }
+            m_bIsPatched = false;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Photon.Pun;
+using System;
 using System.Threading;
 
 namespace BananaHook.Utils
@@ -45,7 +46,11 @@ namespace BananaHook.Utils
             if (m_nTotal > 0 && m_nTagged == m_nTotal)
             {
                 m_bIsGameEnded = true;
-                Events.OnRoundEndPost?.Invoke(null, null);
+                try
+                { 
+                    Events.OnRoundEndPre?.Invoke(null, null);
+                }
+                catch (Exception e) { BananaHook.Log("OnRoundEndPre Exception: " + e.Message); }
             }
         }
         internal static void CheckForTheGameEndPost()
@@ -53,7 +58,11 @@ namespace BananaHook.Utils
             if (!m_bThreadStarted && m_bIsGameEnded && m_nTotal > 0 && m_nTagged == m_nTotal)
             {
                 m_bThreadStarted = true;
-                Events.OnRoundEndPost?.Invoke(null, null);
+                try
+                { 
+                    Events.OnRoundEndPost?.Invoke(null, null);
+                }
+                catch (Exception e) { BananaHook.Log("OnRoundEndPost Exception: " + e.Message); }
                 if (Events.OnRoundStart != null)
                 {
                     // Sadly i need it currently.
@@ -73,7 +82,11 @@ namespace BananaHook.Utils
             m_bIsGameEnded = false;
             OnRoundStartArgs args = new OnRoundStartArgs();
             args.player = Players.GetFirstGuyInfected();
-            Events.OnRoundStart(null, args);
+            try
+            { 
+                Events.OnRoundStart(null, args);
+            }
+            catch (Exception e) { BananaHook.Log("OnRoundStart Exception: " + e.Message); }
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using BananaHook.Utils;
-using ExitGames.Client.Photon;
+﻿using ExitGames.Client.Photon;
 using Photon.Pun;
+using Photon.Realtime;
 
 namespace BananaHook.HookAndPatch
 {
@@ -21,7 +21,15 @@ namespace BananaHook.HookAndPatch
             {
                 case GorillaTagManager.ReportTagEvent:
                 case GorillaTagManager.ReportInfectionTagEvent:
-                    OnPlayerTaggedByPlayerHook.OnEvent(photonEvent);
+                    object[] tagObj = (object[])photonEvent.Parameters.TryGetObject(245);
+                    string taggerUserId = (string)tagObj[0], victimUserId = (string)tagObj[1];
+                    Player tagger = null, victim = null;
+                    foreach (var p in PhotonNetwork.PlayerList)
+                    {
+                        if (p.UserId == taggerUserId) tagger = p;
+                        if (p.UserId == victimUserId) victim = p;
+                    }
+                    OnPlayerTaggedByPlayerHook.OnEvent(tagger, victim);
                     break;
             }
         }

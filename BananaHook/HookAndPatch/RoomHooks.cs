@@ -1,6 +1,4 @@
-﻿using BananaHook.HookAndPatch;
-using BananaHook.Utils;
-using ExitGames.Client.Photon;
+﻿using BananaHook.Utils;
 using HarmonyLib;
 using Photon.Pun;
 using System;
@@ -30,7 +28,11 @@ namespace BananaHook.Patches
                 RoomJoinedArgs args = new RoomJoinedArgs();
                 args.isPrivate = m_bIsPrivateLobby;
                 args.roomCode = PhotonNetwork.CurrentRoom.Name;
-                Events.OnRoomJoined(null, args);
+                try
+                { 
+                    Events.OnRoomJoined(null, args);
+                }
+                catch (Exception e) { BananaHook.Log("OnRoundStart Exception: " + e.Message); }
             }
             /*if (Events.OnRoomJoinedPost != null)
             {
@@ -67,7 +69,11 @@ namespace BananaHook.Patches
         {
             Room.m_szRoomCode = null;
             if (!PhotonNetwork.InRoom) return;
-            Events.OnRoomDisconnected?.Invoke(null, null);
+            try
+            {
+                Events.OnRoomDisconnected?.Invoke(null, null);
+            }
+            catch (Exception e) { BananaHook.Log("OnRoomDisconnected Exception: " + e.Message); }
             // Player is still infected at the join moment?
             // That thing is not curing but i dont want to change game's mechanics
             /*Hashtable hash = new Hashtable(); hash.Add("isInfected", false);
@@ -89,7 +95,11 @@ namespace BananaHook.Patches
                 {
                     IsTagOrInfectArgs args = new IsTagOrInfectArgs();
                     args.isTagging = isTaggingNow;
-                    Events.OnTagOrInfectChange(null, args);
+                    try
+                    { 
+                        Events.OnTagOrInfectChange(null, args);
+                    }
+                    catch (Exception e) { BananaHook.Log("OnTagOrInfectChange Exception: " + e.Message); }
                 }
                 Room.m_bIsTagging = isTaggingNow;
             }
@@ -97,7 +107,11 @@ namespace BananaHook.Patches
             {
                 PlayerDisConnectedArgs args = new PlayerDisConnectedArgs();
                 args.player = newPlayer;
-                Events.OnPlayerConnected(null, args);
+                try
+                { 
+                    Events.OnPlayerConnected(null, args);
+                }
+                catch (Exception e) { BananaHook.Log("OnPlayerConnected Exception: " + e.Message); }
             }
         }
     }
@@ -114,7 +128,11 @@ namespace BananaHook.Patches
             if(soundIndex == 2 && BananaHook.m_bUseSoundAsRoundEnd)
             {
                 Room.m_bIsGameEnded = true;
-                Events.OnRoundEndPost?.Invoke(null, null);
+                try
+                {
+                    Events.OnRoundEndPost?.Invoke(null, null);
+                }
+                catch (Exception e) { BananaHook.Log("OnRoundEndPost Exception: " + e.Message); }
                 if (Events.OnRoundStart != null)
                 {
                     // Sadly i need it currently.
@@ -136,7 +154,11 @@ namespace BananaHook.Patches
             {
                 PlayerDisConnectedArgs args = new PlayerDisConnectedArgs();
                 args.player = otherPlayer;
-                Events.OnPlayerDisconnectedPre(null, args);
+                try
+                { 
+                    Events.OnPlayerDisconnectedPre(null, args);
+                }
+                catch (Exception e) { BananaHook.Log("OnPlayerDisconnectedPre Exception: " + e.Message); }
             }
         }
         private static void Postfix(Photon.Realtime.Player otherPlayer)
@@ -146,7 +168,11 @@ namespace BananaHook.Patches
             {
                 PlayerDisConnectedArgs args = new PlayerDisConnectedArgs();
                 args.player = otherPlayer;
-                Events.OnPlayerDisconnectedPost(null, args);
+                try
+                { 
+                    Events.OnPlayerDisconnectedPost(null, args);
+                }
+                catch (Exception e) { BananaHook.Log("OnPlayerDisconnectedPost Exception: " + e.Message); }
             }
             if (Room.m_eCurrentLobbyMode != eRoomQueue.Casual)
             {
@@ -155,7 +181,11 @@ namespace BananaHook.Patches
                 {
                     IsTagOrInfectArgs args = new IsTagOrInfectArgs();
                     args.isTagging = isTaggingNow;
-                    Events.OnTagOrInfectChange(null, args);
+                    try
+                    { 
+                        Events.OnTagOrInfectChange(null, args);
+                    }
+                    catch (Exception e) { BananaHook.Log("OnTagOrInfectChange Exception: " + e.Message); }
                 }
                 Room.m_bIsTagging = isTaggingNow;
             }
