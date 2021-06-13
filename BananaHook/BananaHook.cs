@@ -3,7 +3,7 @@
 namespace BananaHook
 {
     /* That's me! */
-    [BepInPlugin("net.rusjj.gtlib.bananahook", "BananaHook Lib", "1.0.3")]
+    [BepInPlugin("net.rusjj.gtlib.bananahook", "BananaHook Lib", "1.0.2")]
 
     public class BananaHook : BaseUnityPlugin
     {

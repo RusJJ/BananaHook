@@ -67,6 +67,7 @@ namespace BananaHook.Patches
     {
         private static void Prefix()
         {
+            Room.m_bIsGameEnded = false;
             Room.m_szRoomCode = null;
             if (!PhotonNetwork.InRoom) return;
             try
@@ -125,8 +126,45 @@ namespace BananaHook.Patches
             // Can be risky. What if "2" become changed?
             // Also it's really useful since there's a glitch
             // where someone is NOT tagged, but the game ended.
-            if(soundIndex == 2 && BananaHook.m_bUseSoundAsRoundEnd)
+            switch(soundIndex)
             {
+                case 0: // Player Tagged
+                    if(!Room.m_bIsGameEnded && Room.m_bIsTagging && Players.CountInfectedPlayers() == 1)
+                    {
+                        OnRoundStartArgs args = new OnRoundStartArgs();
+                        args.player = Players.GetFirstGuyInfected();
+                        try
+                        {
+                            Events.OnRoundStart(null, args);
+                        }
+                        catch (Exception e) { BananaHook.Log("OnRoundStart (PlayTagSound) Exception: " + e.Message); }
+                    }
+                    break;
+
+                //case 1: break; // Player joined? Or Tag/Untag?
+
+                case 2: // End of Infection Game
+                    if (!BananaHook.m_bUseSoundAsRoundEnd) return;
+                    Room.m_bIsGameEnded = true;
+                    try
+                    {
+                        Events.OnRoundEndPost?.Invoke(null, null);
+                    }
+                    catch (Exception e) { BananaHook.Log("OnRoundEndPost Exception: " + e.Message); }
+                    if (Events.OnRoundStart != null)
+                    {
+                        // Sadly i need it currently.
+                        // Because the MasterClient is not sending any RPC for this.
+                        Room.m_hCheckerThread = new Thread(Room.Thread_CheckForGameToStart);
+                        Room.m_hCheckerThread.Start();
+                    }
+                    break;
+
+                //case 3: break; // Flag taken
+            }
+            /*if(soundIndex == 2)
+            {
+                if (!BananaHook.m_bUseSoundAsRoundEnd) return;
                 Room.m_bIsGameEnded = true;
                 try
                 {
@@ -140,7 +178,18 @@ namespace BananaHook.Patches
                     Room.m_hCheckerThread = new Thread(Room.Thread_CheckForGameToStart);
                     Room.m_hCheckerThread.Start();
                 }
+                return;
             }
+            if(soundIndex == 0 && !Room.m_bIsGameEnded && Room.m_bIsTagging && Players.CountInfectedPlayers() == 1)
+            {
+                OnRoundStartArgs args = new OnRoundStartArgs();
+                args.player = Players.GetFirstGuyInfected();
+                try
+                {
+                    Events.OnRoundStart(null, args);
+                }
+                catch (Exception e) { BananaHook.Log("OnRoundStart (PlayTagSound) Exception: " + e.Message); }
+            }*/
         }
     }
 

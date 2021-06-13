@@ -18,7 +18,7 @@ namespace BananaHook.Utils
             return nCount;
         }
         // Reversed GorillaTagManager::CurrentInfectionPlayers() (before i downloaded a decompiler, lmao)
-        // P.S. Returning a List instead of Array[]. We dont really need a dumb copying.
+        // P.S. Returning a List instead of Array[]. We dont really need copying.
         public static List<Player> CurrentValidPlayers()
         {
             var pArray = new List<Player>();
@@ -69,7 +69,7 @@ namespace BananaHook.Utils
             object nMatIndex;
             return (playerToCheck.CustomProperties.TryGetValue("matIndex", out nMatIndex) && (int)nMatIndex == 1);
         }
-        public static Player GetCurrentTagger()
+        public static Player GetCurrentIt()
         {
             object obj;
             return PhotonNetwork.NetworkingClient.CurrentRoom.CustomProperties.TryGetValue("currentIt", out obj) ? (Player)obj : null;
