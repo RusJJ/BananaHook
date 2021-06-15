@@ -129,8 +129,9 @@ namespace BananaHook.Patches
             switch(soundIndex)
             {
                 case 0: // Player Tagged
-                    if(!Room.m_bIsGameEnded && Room.m_bIsTagging && Players.CountInfectedPlayers() == 1)
+                    if(BananaHook.m_bUseSoundAsRoundStart && Room.m_bIsGameEnded && !Room.m_bIsTagging && Players.CountInfectedPlayers() == 1)
                     {
+                        Room.m_bIsGameEnded = false;
                         OnRoundStartArgs args = new OnRoundStartArgs();
                         args.player = Players.GetFirstGuyInfected();
                         try
@@ -141,7 +142,7 @@ namespace BananaHook.Patches
                     }
                     break;
 
-                //case 1: break; // Player joined? Or Tag/Untag?
+                //case 1: break; // Player joined? Tag/Untag?
 
                 case 2: // End of Infection Game
                     if (!BananaHook.m_bUseSoundAsRoundEnd) return;
@@ -151,7 +152,7 @@ namespace BananaHook.Patches
                         Events.OnRoundEndPost?.Invoke(null, null);
                     }
                     catch (Exception e) { BananaHook.Log("OnRoundEndPost Exception: " + e.Message); }
-                    if (Events.OnRoundStart != null)
+                    if (!BananaHook.m_bUseSoundAsRoundStart && Events.OnRoundStart != null)
                     {
                         // Sadly i need it currently.
                         // Because the MasterClient is not sending any RPC for this.
@@ -162,34 +163,6 @@ namespace BananaHook.Patches
 
                 //case 3: break; // Flag taken
             }
-            /*if(soundIndex == 2)
-            {
-                if (!BananaHook.m_bUseSoundAsRoundEnd) return;
-                Room.m_bIsGameEnded = true;
-                try
-                {
-                    Events.OnRoundEndPost?.Invoke(null, null);
-                }
-                catch (Exception e) { BananaHook.Log("OnRoundEndPost Exception: " + e.Message); }
-                if (Events.OnRoundStart != null)
-                {
-                    // Sadly i need it currently.
-                    // Because the MasterClient is not sending any RPC for this.
-                    Room.m_hCheckerThread = new Thread(Room.Thread_CheckForGameToStart);
-                    Room.m_hCheckerThread.Start();
-                }
-                return;
-            }
-            if(soundIndex == 0 && !Room.m_bIsGameEnded && Room.m_bIsTagging && Players.CountInfectedPlayers() == 1)
-            {
-                OnRoundStartArgs args = new OnRoundStartArgs();
-                args.player = Players.GetFirstGuyInfected();
-                try
-                {
-                    Events.OnRoundStart(null, args);
-                }
-                catch (Exception e) { BananaHook.Log("OnRoundStart (PlayTagSound) Exception: " + e.Message); }
-            }*/
         }
     }
 

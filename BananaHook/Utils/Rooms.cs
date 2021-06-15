@@ -20,9 +20,9 @@ namespace BananaHook.Utils
     {
         public static eRoomQueue m_eCurrentLobbyMode { get; internal set; } = 0;
         public static eJoinedMap m_eTriggeredMap { get; internal set; } = eJoinedMap.Forest;
-        public static string m_szRoomCode { get; internal set; } = null;
-        public static bool m_bIsGameEnded { get; internal set; } = false;
-        public static bool m_bIsTagging { get; internal set; } = false;
+        public static string m_szRoomCode { get; internal set; } = null; // Just a room code
+        public static bool m_bIsGameEnded { get; internal set; } = false; // True - the game is in process of ending
+        public static bool m_bIsTagging { get; internal set; } = true; // True - Rock-Monk, False - Lava predators!
 
         public static bool IsInRoom() => PhotonNetwork.InRoom;
         public static string GetRoomCode() => PhotonNetwork.InRoom ? PhotonNetwork.CurrentRoom.Name : null;
@@ -38,10 +38,12 @@ namespace BananaHook.Utils
         private static bool m_bThreadStarted = false;
         internal static Thread m_hCheckerThread = null;
         internal static int m_nTagged = 0, m_nTotal = 0;
+        /* Should work. Be aware of glitch "the game is ended but 1 guy is untagged" */
         internal static void CheckForTheGameEndPre()
         {
-            if (m_bThreadStarted) return;
+            if (m_bThreadStarted || m_bIsTagging) return;
             m_nTagged = Players.CountInfectedPlayers();
+            if (m_nTagged < 4) return;
             m_nTotal = Players.CountValidPlayers();
             if (m_nTotal > 0 && m_nTagged == m_nTotal)
             {
@@ -55,6 +57,7 @@ namespace BananaHook.Utils
         }
         internal static void CheckForTheGameEndPost()
         {
+            if (BananaHook.m_bUseSoundAsRoundStart || m_bIsTagging) return;
             if (!m_bThreadStarted && m_bIsGameEnded && m_nTotal > 0 && m_nTagged == m_nTotal)
             {
                 m_bThreadStarted = true;

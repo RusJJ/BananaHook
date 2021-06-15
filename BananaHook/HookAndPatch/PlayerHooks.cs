@@ -22,7 +22,13 @@ namespace BananaHook.HookAndPatch
                 {
                     Events.OnPlayerTagPlayer(null, args);
                 }
-                catch (Exception e) { BananaHook.Log("OnPlayerTagPlayer Exception: " + e.Message); }
+                catch (Exception e)
+                {
+                    BananaHook.Log("OnPlayerTagPlayer Exception: " + e.Message);
+                    BananaHook.Log(e.StackTrace);
+                    BananaHook.Log("Tagger: " + (tagger==null?"null":tagger.NickName));
+                    BananaHook.Log("Victim: " + (victim==null?"null":victim.NickName));
+                }
             }
             if (victim == PhotonNetwork.LocalPlayer && Events.OnLocalPlayerTag != null)
             {
