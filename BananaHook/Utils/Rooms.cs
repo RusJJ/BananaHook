@@ -6,20 +6,23 @@ namespace BananaHook.Utils
 {
     public enum eRoomQueue : byte
     {
-        Default = 0,
-        Casual = 1,
-        Competitive = 2,
+        Custom = 0,
+        Default = 1,
+        Casual = 2,
+        Competitive = 3,
     };
     public enum eJoinedMap : byte
     {
-        Forest = 0,
-        Cave = 1,
-        Canyon = 2,
+        Unknown = 0,
+        GorillaShop = 1,
+        Forest = 2,
+        Cave = 3,
+        Canyon = 4,
     };
     public class Room
     {
         public static eRoomQueue m_eCurrentLobbyMode { get; internal set; } = 0;
-        public static eJoinedMap m_eTriggeredMap { get; internal set; } = eJoinedMap.Forest;
+        public static eJoinedMap m_eTriggeredMap { get; internal set; } = eJoinedMap.Unknown;
         public static string m_szRoomCode { get; internal set; } = null; // Just a room code
         public static bool m_bIsGameEnded { get; internal set; } = false; // True - the game is in process of ending
         public static bool m_bIsTagging { get; internal set; } = true; // True - Rock-Monk, False - Lava predators!
@@ -52,7 +55,7 @@ namespace BananaHook.Utils
                 { 
                     Events.OnRoundEndPre?.Invoke(null, null);
                 }
-                catch (Exception e) { BananaHook.Log("OnRoundEndPre Exception: " + e.Message); }
+                catch (Exception e) { BananaHook.Log("OnRoundEndPre Exception: " + e.StackTrace); }
             }
         }
         internal static void CheckForTheGameEndPost()
@@ -65,7 +68,7 @@ namespace BananaHook.Utils
                 { 
                     Events.OnRoundEndPost?.Invoke(null, null);
                 }
-                catch (Exception e) { BananaHook.Log("OnRoundEndPost Exception: " + e.Message); }
+                catch (Exception e) { BananaHook.Log("OnRoundEndPost Exception: " + e.StackTrace); }
                 if (Events.OnRoundStart != null)
                 {
                     // Sadly i need it currently.
@@ -89,7 +92,7 @@ namespace BananaHook.Utils
             { 
                 Events.OnRoundStart(null, args);
             }
-            catch (Exception e) { BananaHook.Log("OnRoundStart Exception: " + e.Message); }
+            catch (Exception e) { BananaHook.Log("OnRoundStart Exception: " + e.StackTrace); }
         }
     }
 }

@@ -24,7 +24,7 @@ namespace BananaHook.HookAndPatch
                 }
                 catch (Exception e)
                 {
-                    BananaHook.Log("OnPlayerTagPlayer Exception: " + e.Message);
+                    BananaHook.Log("OnPlayerTagPlayer Exception: " + e.StackTrace);
                     BananaHook.Log(e.StackTrace);
                     BananaHook.Log("Tagger: " + (tagger==null?"null":tagger.NickName));
                     BananaHook.Log("Victim: " + (victim==null?"null":victim.NickName));
@@ -40,7 +40,7 @@ namespace BananaHook.HookAndPatch
                 { 
                     Events.OnLocalPlayerTag(null, args);
                 }
-                catch (Exception e) { BananaHook.Log("OnLocalPlayerTag Exception: " + e.Message); }
+                catch (Exception e) { BananaHook.Log("OnLocalPlayerTag Exception: " + e.StackTrace); }
             }
             if (!BananaHook.m_bUseSoundAsRoundEnd) Utils.Room.CheckForTheGameEndPost();
         }
@@ -74,7 +74,7 @@ namespace BananaHook.HookAndPatch
             }
             catch (Exception e)
             {
-                BananaHook.Log("ReportTag Exception: " + e.Message);
+                BananaHook.Log("ReportTag Exception: " + e.StackTrace);
             }
         }
     }
@@ -96,7 +96,7 @@ namespace BananaHook.HookAndPatch
                     { 
                         Events.OnLocalNicknameChange(null, args);
                     }
-                    catch (Exception e) { BananaHook.Log("OnLocalNicknameChange Exception: " + e.Message); }
+                    catch (Exception e) { BananaHook.Log("OnLocalNicknameChange Exception: " + e.StackTrace); }
                 }
             }
         }

@@ -32,7 +32,7 @@ namespace BananaHook.Patches
                 { 
                     Events.OnRoomJoined(null, args);
                 }
-                catch (Exception e) { BananaHook.Log("OnRoundStart Exception: " + e.Message); }
+                catch (Exception e) { BananaHook.Log("OnRoundStart Exception: " + e.StackTrace); }
             }
             /*if (Events.OnRoomJoinedPost != null)
             {
@@ -74,7 +74,7 @@ namespace BananaHook.Patches
             {
                 Events.OnRoomDisconnected?.Invoke(null, null);
             }
-            catch (Exception e) { BananaHook.Log("OnRoomDisconnected Exception: " + e.Message); }
+            catch (Exception e) { BananaHook.Log("OnRoomDisconnected Exception: " + e.StackTrace); }
             // Player is still infected at the join moment?
             // That thing is not curing but i dont want to change game's mechanics
             /*Hashtable hash = new Hashtable(); hash.Add("isInfected", false);
@@ -100,7 +100,7 @@ namespace BananaHook.Patches
                     { 
                         Events.OnTagOrInfectChange(null, args);
                     }
-                    catch (Exception e) { BananaHook.Log("OnTagOrInfectChange Exception: " + e.Message); }
+                    catch (Exception e) { BananaHook.Log("OnTagOrInfectChange Exception: " + e.StackTrace); }
                 }
                 Room.m_bIsTagging = isTaggingNow;
             }
@@ -112,7 +112,7 @@ namespace BananaHook.Patches
                 { 
                     Events.OnPlayerConnected(null, args);
                 }
-                catch (Exception e) { BananaHook.Log("OnPlayerConnected Exception: " + e.Message); }
+                catch (Exception e) { BananaHook.Log("OnPlayerConnected Exception: " + e.StackTrace); }
             }
         }
     }
@@ -138,7 +138,7 @@ namespace BananaHook.Patches
                         {
                             Events.OnRoundStart(null, args);
                         }
-                        catch (Exception e) { BananaHook.Log("OnRoundStart (PlayTagSound) Exception: " + e.Message); }
+                        catch (Exception e) { BananaHook.Log("OnRoundStart (PlayTagSound) Exception: " + e.StackTrace); }
                     }
                     break;
 
@@ -151,7 +151,7 @@ namespace BananaHook.Patches
                     {
                         Events.OnRoundEndPost?.Invoke(null, null);
                     }
-                    catch (Exception e) { BananaHook.Log("OnRoundEndPost Exception: " + e.Message); }
+                    catch (Exception e) { BananaHook.Log("OnRoundEndPost Exception: " + e.StackTrace); }
                     if (!BananaHook.m_bUseSoundAsRoundStart && Events.OnRoundStart != null)
                     {
                         // Sadly i need it currently.
@@ -180,7 +180,7 @@ namespace BananaHook.Patches
                 { 
                     Events.OnPlayerDisconnectedPre(null, args);
                 }
-                catch (Exception e) { BananaHook.Log("OnPlayerDisconnectedPre Exception: " + e.Message); }
+                catch (Exception e) { BananaHook.Log("OnPlayerDisconnectedPre Exception: " + e.StackTrace); }
             }
         }
         private static void Postfix(Photon.Realtime.Player otherPlayer)
@@ -194,7 +194,7 @@ namespace BananaHook.Patches
                 { 
                     Events.OnPlayerDisconnectedPost(null, args);
                 }
-                catch (Exception e) { BananaHook.Log("OnPlayerDisconnectedPost Exception: " + e.Message); }
+                catch (Exception e) { BananaHook.Log("OnPlayerDisconnectedPost Exception: " + e.StackTrace); }
             }
             if (Room.m_eCurrentLobbyMode != eRoomQueue.Casual)
             {
@@ -207,7 +207,7 @@ namespace BananaHook.Patches
                     { 
                         Events.OnTagOrInfectChange(null, args);
                     }
-                    catch (Exception e) { BananaHook.Log("OnTagOrInfectChange Exception: " + e.Message); }
+                    catch (Exception e) { BananaHook.Log("OnTagOrInfectChange Exception: " + e.StackTrace); }
                 }
                 Room.m_bIsTagging = isTaggingNow;
             }
@@ -221,9 +221,12 @@ namespace BananaHook.Patches
     {
         private static void Postfix(GorillaNetworkJoinTrigger __instance)
         {
+            if (__instance == GorillaComputer.instance.cityMapTrigger) { Room.m_eTriggeredMap = eJoinedMap.GorillaShop; return; }
             if (__instance == GorillaComputer.instance.forestMapTrigger) { Room.m_eTriggeredMap = eJoinedMap.Forest; return; }
             if (__instance == GorillaComputer.instance.caveMapTrigger) { Room.m_eTriggeredMap = eJoinedMap.Cave; return; }
-            if (__instance == GorillaComputer.instance.canyonMapTrigger) Room.m_eTriggeredMap = eJoinedMap.Canyon;
+            if (__instance == GorillaComputer.instance.canyonMapTrigger) { Room.m_eTriggeredMap = eJoinedMap.Canyon; return; }
+
+            Room.m_eTriggeredMap = eJoinedMap.Unknown;
         }
     }
 }
