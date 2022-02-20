@@ -50,18 +50,19 @@ namespace BananaHook.Patches
 
             Room.m_hCurrentIt = Players.GetFirstGuyInfected(); // No other way to know
             Room.m_bIsTagging = Room.IsTagging();
-            Room.m_szRoomCode = PhotonNetwork.InRoom ? PhotonNetwork.CurrentRoom.Name : null;
+            Room.m_szRoomCode = null;
             Room.CheckForTheGameEndPre();
-            if (PhotonNetwork.CurrentRoom != null)
+            if (PhotonNetwork.InRoom)
             {
                 var currentRoom = PhotonNetwork.NetworkingClient.CurrentRoom;
                 m_bIsPrivateLobby = !currentRoom.IsVisible || currentRoom.CustomProperties.ContainsKey("Description");
+                Room.m_szRoomCode = PhotonNetwork.CurrentRoom.Name;
             }
             if (Events.OnRoomJoined != null)
             {
                 RoomJoinedArgs args = new RoomJoinedArgs();
                 args.isPrivate = m_bIsPrivateLobby;
-                args.roomCode = PhotonNetwork.CurrentRoom.Name;
+                args.roomCode = Room.m_szRoomCode;
                 try
                 {
                     Events.OnRoomJoined(null, args);
@@ -98,7 +99,7 @@ namespace BananaHook.Patches
             try
             {
                 if (!PhotonNetwork.InRoom) return;
-                if (Room.m_eCurrentLobbyMode == eRoomQueue.Default && Room.m_eCurrentLobbyMode == eRoomQueue.Competitive)
+                if (Room.m_eCurrentLobbyMode == eRoomQueue.Default || Room.m_eCurrentLobbyMode == eRoomQueue.Competitive)
                 {
                     bool isTaggingNow = Room.IsTagging();
                     if (Room.m_bIsTagging != isTaggingNow && Events.OnTagOrInfectChange != null)

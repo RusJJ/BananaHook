@@ -85,7 +85,7 @@ namespace BananaHook.Utils
             foreach (var p in PhotonNetwork.PlayerList)
             {
                 prig = Players.GetVRRigOfPlayer(p);
-                if (prig != null && prig != null && prig.currentMatIndex != 0) return p;
+                if (prig != null && prig.currentMatIndex != 0) return p;
             }
             return null;
         }
