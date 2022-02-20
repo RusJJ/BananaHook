@@ -17,6 +17,33 @@ namespace BananaHook.Utils
             }
             return nCount;
         }
+        public static VRRig GetVRRigOfPlayer(Player player)
+        {
+            VRRig vrrig;
+            if (GorillaParent.instance.vrrigDict.TryGetValue(player, out vrrig)) return vrrig;
+            if (GorillaGameManager.instance.playerVRRigDict.TryGetValue(player.ActorNumber, out vrrig)) return vrrig;
+            foreach (VRRig vrrig2 in GorillaParent.instance.vrrigs)
+            {
+                if (vrrig2.myPlayer == player) return vrrig2;
+            }
+            return null;
+        }
+        public static Player FindPlayerOfVRRig(VRRig vrrig) => (vrrig != null && vrrig.photonView != null && vrrig.photonView.Owner != null) ? vrrig.photonView.Owner : (Player)null;
+        public static Player GetTargetOf(Player p)
+        {
+            if (Room.m_eCurrentGamemode != eRoomGamemode.Hunt || p == null) return null;
+            return GorillaGameManager.instance.GetComponent<GorillaHuntManager>().GetTargetOf(p);
+        }
+        public static Player GetTargetOfWho(Player testingPlayer)
+        {
+            if (Room.m_eCurrentGamemode != eRoomGamemode.Hunt || testingPlayer == null) return null;
+            GorillaHuntManager man = GorillaGameManager.instance.GetComponent<GorillaHuntManager>();
+            foreach (var p in PhotonNetwork.PlayerList)
+            {
+                if (man.GetTargetOf(p) == testingPlayer) return p;
+            }
+            return null;
+        }
         // Reversed GorillaTagManager::CurrentInfectionPlayers() (before i downloaded a decompiler, lmao)
         // P.S. Returning a List instead of Array[]. We dont really need copying.
         public static List<Player> CurrentValidPlayers()
@@ -32,47 +59,55 @@ namespace BananaHook.Utils
         public static int CountInfectedPlayers()
         {
             int nCount = 0;
-            object bInfected;
+            VRRig prig;
             foreach (var p in PhotonNetwork.PlayerList)
             {
-                if (p.CustomProperties.TryGetValue("isInfected", out bInfected) && (bool)bInfected) ++nCount;
+                prig = Players.GetVRRigOfPlayer(p);
+                if (prig != null && prig.currentMatIndex != 0) ++nCount;
             }
             return nCount;
         }
         public static List<Player> CurrentInfectedPlayers()
         {
             var pArray = new List<Player>();
-            object bInfected;
+            VRRig prig;
             foreach (var p in PhotonNetwork.PlayerList)
             {
-                if(p.CustomProperties.TryGetValue("isInfected", out bInfected) && (bool)bInfected) pArray.Add(p);
+                prig = Players.GetVRRigOfPlayer(p);
+                if (prig != null && prig.currentMatIndex != 0) pArray.Add(p);
             }
             return pArray;
         }
         /* Just a first guy in a loop that is infected */
         public static Player GetFirstGuyInfected()
         {
-            object bInfected;
+            VRRig prig;
             foreach (var p in PhotonNetwork.PlayerList)
             {
-                if (p.CustomProperties.TryGetValue("isInfected", out bInfected) && (bool)bInfected) return p;
+                prig = Players.GetVRRigOfPlayer(p);
+                if (prig != null && prig != null && prig.currentMatIndex != 0) return p;
             }
             return null;
         }
         public static bool IsInfected(Player playerToCheck)
         {
-            object bInfected;
-            return (playerToCheck.CustomProperties.TryGetValue("isInfected", out bInfected) && (bool)bInfected);
+            VRRig prig = Players.GetVRRigOfPlayer(playerToCheck);
+            return (prig != null && prig.currentMatIndex == 2);
         }
         public static bool IsTagger(Player playerToCheck)
         {
-            object nMatIndex;
-            return (playerToCheck.CustomProperties.TryGetValue("matIndex", out nMatIndex) && (int)nMatIndex == 1);
+            VRRig prig = Players.GetVRRigOfPlayer(playerToCheck);
+            return (prig != null && prig.currentMatIndex == 1);
+        }
+        public static bool IsHunted(Player playerToCheck)
+        {
+            VRRig prig = Players.GetVRRigOfPlayer(playerToCheck);
+            return (prig != null && prig.currentMatIndex == 3);
         }
         public static Player GetCurrentIt()
         {
-            object obj;
-            return PhotonNetwork.NetworkingClient.CurrentRoom.CustomProperties.TryGetValue("currentIt", out obj) ? (Player)obj : null;
+            if (!Room.IsInRoom()) return null;
+            return Room.m_hCurrentIt;
         }
     }
 }

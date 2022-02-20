@@ -1,6 +1,7 @@
 ﻿using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
+using System;
 
 namespace BananaHook.HookAndPatch
 {
@@ -15,23 +16,27 @@ namespace BananaHook.HookAndPatch
         {
             PhotonNetwork.NetworkingClient.EventReceived += OnEvent;
         }
-        public void OnEvent(EventData photonEvent)
+        public void OnEvent(EventData photonEvent) // Hunt doesnt send any events
         {
-            switch(photonEvent.Code)
+            try
             {
-                case GorillaTagManager.ReportTagEvent:
-                case GorillaTagManager.ReportInfectionTagEvent:
-                    object[] tagObj = (object[])photonEvent.Parameters.TryGetObject(245);
-                    string taggerUserId = (string)tagObj[0], victimUserId = (string)tagObj[1];
-                    Player tagger = null, victim = null;
-                    foreach (var p in PhotonNetwork.PlayerList)
-                    {
-                        if (p.UserId == taggerUserId) tagger = p;
-                        if (p.UserId == victimUserId) victim = p;
-                    }
-                    OnPlayerTaggedByPlayerHook.OnEvent(tagger, victim);
-                    break;
+                switch (photonEvent.Code)
+                {
+                    case GorillaTagManager.ReportTagEvent:
+                    case GorillaTagManager.ReportInfectionTagEvent:
+                        object[] tagObj = (object[])photonEvent.Parameters.TryGetObject(245);
+                        string taggerUserId = (string)tagObj[0], victimUserId = (string)tagObj[1];
+                        Player tagger = null, victim = null;
+                        foreach (var p in PhotonNetwork.PlayerList)
+                        {
+                            if (p.UserId == taggerUserId) tagger = p;
+                            if (p.UserId == victimUserId) victim = p;
+                        }
+                        OnPlayerTaggedByPlayerHook.OnEvent(tagger, victim);
+                        break;
+                }
             }
+            catch (Exception e) { BananaHook.Log("OnEvent Exception: " + e.Message + "\n" + e.StackTrace); }
         }
     }
 }
