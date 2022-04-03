@@ -17,14 +17,18 @@ namespace BananaHook.HookAndPatch
                 args.tagger = tagger;
                 args.victim = victim;
                 args.isTagging = isTagging;
-                try
+                object[] obja = { null, args };
+                foreach (var del in Events.OnPlayerTagPlayer.GetInvocationList())
                 {
-                    Events.OnPlayerTagPlayer(null, args);
-                }
-                catch (Exception e)
-                {
-                    BananaHook.Log("OnPlayerTagPlayer Exception: " + e.Message + "\n" + e.StackTrace + "\nTagger: " + (tagger==null?"null":tagger.NickName) + "\nVictim: " + (victim==null?"null":victim.NickName));
-                    BananaHook.Log(e.StackTrace);
+                    try
+                    {
+                        del.DynamicInvoke(obja);
+                    }
+                    catch (Exception e)
+                    {
+                        BananaHook.Log("OnPlayerTagPlayer Exception: " + e.Message + "\n" + e.StackTrace + "\nTagger: " + (tagger == null ? "null" : tagger.NickName) + "\nVictim: " + (victim == null ? "null" : victim.NickName));
+                        BananaHook.Log(e.StackTrace);
+                    }
                 }
             }
             if (victim == PhotonNetwork.LocalPlayer && Events.OnLocalPlayerTag != null)
@@ -33,11 +37,15 @@ namespace BananaHook.HookAndPatch
                 args.tagger = tagger;
                 args.victim = victim;
                 args.isTagging = isTagging;
-                try
-                { 
-                    Events.OnLocalPlayerTag(null, args);
+                object[] obja = { null, args };
+                foreach (var del in Events.OnLocalPlayerTag.GetInvocationList())
+                {
+                    try
+                    {
+                        del.DynamicInvoke(obja);
+                    }
+                    catch (Exception e) { BananaHook.Log("OnLocalPlayerTag Exception: " + e.Message + "\n" + e.StackTrace); }
                 }
-                catch (Exception e) { BananaHook.Log("OnLocalPlayerTag Exception: " + e.Message + "\n" + e.StackTrace); }
             }
         }
     }
@@ -53,11 +61,15 @@ namespace BananaHook.HookAndPatch
                 PlayerNicknameArgs args = new PlayerNicknameArgs();
                 args.oldNickName = PhotonNetwork.LocalPlayer.NickName;
                 args.newNickName = value;
-                try
+                object[] obja = { null, args };
+                foreach (var del in Events.OnLocalNicknameChange.GetInvocationList())
                 {
-                    Events.OnLocalNicknameChange(null, args);
+                    try
+                    {
+                        del.DynamicInvoke(obja);
+                    }
+                    catch (Exception e) { BananaHook.Log("OnLocalNicknameChange Exception: " + e.Message + "\n" + e.StackTrace); }
                 }
-                catch (Exception e) { BananaHook.Log("OnLocalNicknameChange Exception: " + e.Message + "\n" + e.StackTrace); }
             }
         }
     }
@@ -73,11 +85,15 @@ namespace BananaHook.HookAndPatch
                 PlayerNicknameArgs args = new PlayerNicknameArgs();
                 args.oldNickName = "gorilla";
                 args.newNickName = __instance.currentName;
-                try
+                object[] obja = { null, args };
+                foreach (var del in Events.OnLocalNicknameChange.GetInvocationList())
                 {
-                    Events.OnLocalNicknameChange(null, args);
+                    try
+                    {
+                        del.DynamicInvoke(obja);
+                    }
+                    catch (Exception e) { BananaHook.Log("OnLocalNicknameChange Exception: " + e.Message + "\n" + e.StackTrace); }
                 }
-                catch (Exception e) { BananaHook.Log("OnLocalNicknameChange Exception: " + e.Message + "\n" + e.StackTrace); }
             }
         }
     }

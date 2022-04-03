@@ -24,9 +24,11 @@ namespace BananaHook.Utils
         Forest = 2,
         Cave = 3,
         Canyon = 4,
+        Mountain = 5,
     };
     public class Room
     {
+        public static bool m_bModdedLobby { get; internal set; } = false;
         public static eRoomQueue m_eCurrentLobbyMode { get; internal set; } = eRoomQueue.Custom;
         public static eRoomGamemode m_eCurrentGamemode { get; internal set; } = eRoomGamemode.Custom;
         public static eJoinedMap m_eTriggeredMap { get; internal set; } = eJoinedMap.Unknown;
