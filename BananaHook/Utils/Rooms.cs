@@ -28,6 +28,7 @@ namespace BananaHook.Utils
         Mountain = 5,
         SkyJungle = 6,
         Basement = 7,
+        Beach = 8,
     };
     public class Room
     {
