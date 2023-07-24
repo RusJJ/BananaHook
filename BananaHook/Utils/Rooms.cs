@@ -9,6 +9,7 @@ namespace BananaHook.Utils
         Custom = 0,
         Default = 1,
         Competitive = 2,
+        MiniGames = 3,
     };
     public enum eRoomGamemode : byte
     {
@@ -25,6 +26,8 @@ namespace BananaHook.Utils
         Cave = 3,
         Canyon = 4,
         Mountain = 5,
+        SkyJungle = 6,
+        Basement = 7,
     };
     public class Room
     {
