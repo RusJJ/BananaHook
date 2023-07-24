@@ -1,4 +1,6 @@
-﻿using BepInEx;
+﻿using BananaHook.HookAndPatch;
+using BepInEx;
+using Photon.Pun;
 
 namespace BananaHook
 {
@@ -10,11 +12,14 @@ namespace BananaHook
         private static BananaHook m_hInstance;
         internal static void Log(string msg) => m_hInstance.Logger.LogMessage(msg);
 
-        void Awake()
+        void Update()
         {
-            m_hInstance = this;
-            Patch.Apply();
-            new HookAndPatch.EventListener();
+            if (PhotonNetwork.IsConnectedAndReady && !Patch.IsPatched())
+            {
+                m_hInstance = this;
+                Patch.Apply();
+                new HookAndPatch.EventListener();
+            }
         }
     }
 }

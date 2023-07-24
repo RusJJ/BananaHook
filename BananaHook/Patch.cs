@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace BananaHook
 {
-    public class Patch
+  /*  public class Patch
     {
         private static bool m_bIsPatched = false;
         private static Harmony m_hMyInstance = null;
@@ -35,5 +35,5 @@ namespace BananaHook
             }
             m_bIsPatched = false;
         }
-    }
+    }*/
 }
