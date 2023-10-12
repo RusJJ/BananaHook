@@ -1,3 +1,6 @@
+# The project is frozen
+Sadly my headset is broken. No more updates until i will get a new one.
+
 # What is this mod?
 This is a library for a future plugins/mods.
 
